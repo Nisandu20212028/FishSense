@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables
+.env
+.env.local
+
+# Data files (too large for Git)
+data/samples/*.json
+data/raw/*.tif
+data/raw/*.nc
+data/raw/*.hdf
+*.csv
+*.tif
+*.nc
+*.hdf
+
+# But keep the directory structure
+!data/.gitkeep
+!data/samples/.gitkeep
+!data/plots/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Model files (can be large)
+models/*.pkl
+models/*.h5
+models/*.joblib
+
+# Plots (if too many)
+# data/plots/*.png
+
+# Logs
+*.log
