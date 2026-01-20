@@ -1,0 +1,258 @@
+{
+  "date": "2023-11-29",
+  "dataset": "COPERNICUS/S3/OLCI",
+  "unit": "spectral radiance (chlorophyll proxy)",
+  "note": "chlorophyll_index = (Oa08-Oa05)/(Oa08+Oa05)",
+  "samples": [
+    {
+      "longitude": 79.5,
+      "latitude": 6.0,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 6.875,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 7.75,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 8.625,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 9.5,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 6.0,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 6.875,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 7.75,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 8.625,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 9.5,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 6.0,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 6.875,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 7.75,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 8.625,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 9.5,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 6.0,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 6.875,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 7.75,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 8.625,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 9.5,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 6.0,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 6.875,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 7.75,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 8.625,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 9.5,
+      "values": {
+        "Oa05_radiance": null,
+        "Oa08_radiance": null,
+        "Oa10_radiance": null,
+        "chlorophyll_index": null
+      }
+    }
+  ]
+}

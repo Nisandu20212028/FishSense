@@ -1,0 +1,308 @@
+{
+  "date": "2023-11-30",
+  "dataset": "HYCOM/sea_water_velocity",
+  "unit": "m/s (converted from cm/s)",
+  "note": "Surface currents at 0m depth. Typical range: 0.1-2.5 m/s",
+  "samples": [
+    {
+      "longitude": 79.5,
+      "latitude": 6.0,
+      "values": {
+        "velocity_u_0": -216,
+        "velocity_v_0": 252,
+        "velocity_u_m_s": -2.16,
+        "velocity_v_m_s": 2.52,
+        "current_speed_m_s": 3.319,
+        "current_direction_deg": 319.4
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 6.875,
+      "values": {
+        "velocity_u_0": 674,
+        "velocity_v_0": 200,
+        "velocity_u_m_s": 6.74,
+        "velocity_v_m_s": 2.0,
+        "current_speed_m_s": 7.03,
+        "current_direction_deg": 73.5
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 7.75,
+      "values": {
+        "velocity_u_0": -108,
+        "velocity_v_0": 289,
+        "velocity_u_m_s": -1.08,
+        "velocity_v_m_s": 2.89,
+        "current_speed_m_s": 3.085,
+        "current_direction_deg": 339.5
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 8.625,
+      "values": {
+        "velocity_u_0": -65,
+        "velocity_v_0": 7,
+        "velocity_u_m_s": -0.65,
+        "velocity_v_m_s": 0.07,
+        "current_speed_m_s": 0.654,
+        "current_direction_deg": 276.1
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 9.5,
+      "values": {
+        "velocity_u_0": 7,
+        "velocity_v_0": -34,
+        "velocity_u_m_s": 0.07,
+        "velocity_v_m_s": -0.34,
+        "current_speed_m_s": 0.347,
+        "current_direction_deg": 168.4
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 6.0,
+      "values": {
+        "velocity_u_0": 37,
+        "velocity_v_0": 150,
+        "velocity_u_m_s": 0.37,
+        "velocity_v_m_s": 1.5,
+        "current_speed_m_s": 1.545,
+        "current_direction_deg": 13.9
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 6.875,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 7.75,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 8.625,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 9.5,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 6.0,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 6.875,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 7.75,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 8.625,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 9.5,
+      "values": {
+        "velocity_u_0": 40,
+        "velocity_v_0": 19,
+        "velocity_u_m_s": 0.4,
+        "velocity_v_m_s": 0.19,
+        "current_speed_m_s": 0.443,
+        "current_direction_deg": 64.6
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 6.0,
+      "values": {
+        "velocity_u_0": -22,
+        "velocity_v_0": 12,
+        "velocity_u_m_s": -0.22,
+        "velocity_v_m_s": 0.12,
+        "current_speed_m_s": 0.251,
+        "current_direction_deg": 298.6
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 6.875,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 7.75,
+      "values": {
+        "velocity_u_0": null,
+        "velocity_v_0": null,
+        "velocity_u_m_s": null,
+        "velocity_v_m_s": null,
+        "current_speed_m_s": null,
+        "current_direction_deg": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 8.625,
+      "values": {
+        "velocity_u_0": -104,
+        "velocity_v_0": 77,
+        "velocity_u_m_s": -1.04,
+        "velocity_v_m_s": 0.77,
+        "current_speed_m_s": 1.294,
+        "current_direction_deg": 306.5
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 9.5,
+      "values": {
+        "velocity_u_0": 545,
+        "velocity_v_0": -512,
+        "velocity_u_m_s": 5.45,
+        "velocity_v_m_s": -5.12,
+        "current_speed_m_s": 7.478,
+        "current_direction_deg": 133.2
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 6.0,
+      "values": {
+        "velocity_u_0": -170,
+        "velocity_v_0": -114,
+        "velocity_u_m_s": -1.7,
+        "velocity_v_m_s": -1.14,
+        "current_speed_m_s": 2.047,
+        "current_direction_deg": 236.2
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 6.875,
+      "values": {
+        "velocity_u_0": -34,
+        "velocity_v_0": 249,
+        "velocity_u_m_s": -0.34,
+        "velocity_v_m_s": 2.49,
+        "current_speed_m_s": 2.513,
+        "current_direction_deg": 352.2
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 7.75,
+      "values": {
+        "velocity_u_0": 5,
+        "velocity_v_0": 541,
+        "velocity_u_m_s": 0.05,
+        "velocity_v_m_s": 5.41,
+        "current_speed_m_s": 5.41,
+        "current_direction_deg": 0.5
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 8.625,
+      "values": {
+        "velocity_u_0": 416,
+        "velocity_v_0": -14,
+        "velocity_u_m_s": 4.16,
+        "velocity_v_m_s": -0.14,
+        "current_speed_m_s": 4.162,
+        "current_direction_deg": 91.9
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 9.5,
+      "values": {
+        "velocity_u_0": 226,
+        "velocity_v_0": -11,
+        "velocity_u_m_s": 2.26,
+        "velocity_v_m_s": -0.11,
+        "current_speed_m_s": 2.263,
+        "current_direction_deg": 92.8
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "model_type": "RandomForestClassifier",
+  "n_estimators": 100,
+  "max_depth": 10,
+  "features": [
+    "sst_celsius",
+    "current_speed_m_s",
+    "current_u_m_s",
+    "current_v_m_s",
+    "temp_deviation",
+    "lon_normalized",
+    "lat_normalized"
+  ],
+  "classes": [
+    "High",
+    "Low",
+    "Medium"
+  ],
+  "train_accuracy": 1.0,
+  "test_accuracy": 1.0,
+  "n_train_samples": 448,
+  "n_test_samples": 112
+}

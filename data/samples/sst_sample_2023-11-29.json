@@ -1,0 +1,207 @@
+{
+  "date": "2023-11-29",
+  "dataset": "NOAA/CDR/OISST/V2_1",
+  "unit": "degrees Celsius",
+  "samples": [
+    {
+      "longitude": 79.5,
+      "latitude": 6.0,
+      "values": {
+        "sst": 2933,
+        "sst_celsius": 29.33
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 6.875,
+      "values": {
+        "sst": 2905,
+        "sst_celsius": 29.05
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 7.75,
+      "values": {
+        "sst": 2901,
+        "sst_celsius": 29.01
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 8.625,
+      "values": {
+        "sst": 2898,
+        "sst_celsius": 28.98
+      }
+    },
+    {
+      "longitude": 79.5,
+      "latitude": 9.5,
+      "values": {
+        "sst": 2872,
+        "sst_celsius": 28.72
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 6.0,
+      "values": {
+        "sst": 2904,
+        "sst_celsius": 29.04
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 6.875,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 7.75,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 8.625,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.125,
+      "latitude": 9.5,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 6.0,
+      "values": {
+        "sst": 2909,
+        "sst_celsius": 29.09
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 6.875,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 7.75,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 8.625,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 80.75,
+      "latitude": 9.5,
+      "values": {
+        "sst": 2858,
+        "sst_celsius": 28.58
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 6.0,
+      "values": {
+        "sst": 2900,
+        "sst_celsius": 29.0
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 6.875,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 7.75,
+      "values": {
+        "sst": null,
+        "sst_celsius": null
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 8.625,
+      "values": {
+        "sst": 2856,
+        "sst_celsius": 28.56
+      }
+    },
+    {
+      "longitude": 81.375,
+      "latitude": 9.5,
+      "values": {
+        "sst": 2860,
+        "sst_celsius": 28.6
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 6.0,
+      "values": {
+        "sst": 2897,
+        "sst_celsius": 28.97
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 6.875,
+      "values": {
+        "sst": 2842,
+        "sst_celsius": 28.42
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 7.75,
+      "values": {
+        "sst": 2800,
+        "sst_celsius": 28.0
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 8.625,
+      "values": {
+        "sst": 2852,
+        "sst_celsius": 28.52
+      }
+    },
+    {
+      "longitude": 82.0,
+      "latitude": 9.5,
+      "values": {
+        "sst": 2854,
+        "sst_celsius": 28.54
+      }
+    }
+  ]
+}
