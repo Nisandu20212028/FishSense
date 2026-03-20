@@ -1953,8 +1953,12 @@ with col2:
         st.markdown("### 📥 Offline Report")
         st.caption("Download this report to use at sea without internet")
         
-        # Generate the report map HTML
-        report_map = folium.Map(location=[lat, lon], zoom_start=9, tiles='OpenStreetMap')
+        # Generate the report map HTML (use CartoDB tiles - works when opened locally)
+        report_map = folium.Map(
+            location=[lat, lon], zoom_start=9,
+            tiles='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+            attr='&copy; <a href="https://carto.com/">CARTO</a>'
+        )
         folium.Rectangle(bounds=[[5.9, 79.5], [9.9, 81.9]], color='blue', fill=False, weight=2).add_to(report_map)
         report_color = {'High': 'green', 'Medium': 'orange', 'Low': 'red'}
         folium.CircleMarker(
@@ -1963,6 +1967,36 @@ with col2:
             fillColor=report_color[prediction], fillOpacity=0.7, weight=3,
             popup=f"AI Prediction: {prediction}\nSST: {sst:.1f}°C\nCurrent: {current_speed:.1f} m/s"
         ).add_to(report_map)
+        
+        # Add K-Means Zone Overlay to report map
+        report_cluster_colors = {0: '#3b82f6', 1: '#f59e0b', 2: '#14b8a6'}
+        report_cluster_labels = {
+            0: 'Nutrient-Rich Coastal Zone',
+            1: 'Seasonal Fishing Zone',
+            2: 'Deep Water Pelagic Zone',
+        }
+        report_cluster_descs = {
+            0: 'Strong currents bring nutrients — attracts coastal fish',
+            1: 'Moderate seasonal conditions — good during monsoon transitions',
+            2: 'Calm deep waters — suited for tuna and pelagic species',
+        }
+        report_zones = generate_kmeans_zones(model, scaler, kmeans_model)
+        if report_zones:
+            cell_size = 0.5
+            for zone in report_zones:
+                zc = report_cluster_colors.get(zone['cluster'], '#6b7280')
+                zl = report_cluster_labels.get(zone['cluster'], f"Zone {zone['cluster']}")
+                zd = report_cluster_descs.get(zone['cluster'], '')
+                folium.Rectangle(
+                    bounds=[
+                        [zone['lat'] - cell_size/2, zone['lon'] - cell_size/2],
+                        [zone['lat'] + cell_size/2, zone['lon'] + cell_size/2]
+                    ],
+                    color=zc, fill=True, fillColor=zc,
+                    fillOpacity=0.15, weight=1, opacity=0.4,
+                    popup=f"<b>{zl}</b><br><i>{zd}</i><br><br>RF Prediction: <b>{zone['prediction']}</b><br>Est. SST: {zone['sst']:.1f}°C<br>Est. Current: {zone['current']:.1f} m/s"
+                ).add_to(report_map)
+        
         map_html = report_map._repr_html_()
         
         # Build confidence bars HTML
@@ -2079,9 +2113,17 @@ with col2:
     </div>
 
     <div class="card">
-        <h2>🗺️ Location Map</h2>
+        <h2>🗺️ Location Map with K-Means Zones</h2>
         <div class="map-container">
             {map_html}
+        </div>
+        <div style="margin-top: 10px;">
+            <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 8px;"><b>Zone Legend (K-Means Clusters):</b></div>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 14px; height: 14px; background: #3b82f6; border-radius: 3px; display: inline-block;"></span> Nutrient-Rich Coastal</span>
+                <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 14px; height: 14px; background: #f59e0b; border-radius: 3px; display: inline-block;"></span> Seasonal Fishing</span>
+                <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 14px; height: 14px; background: #14b8a6; border-radius: 3px; display: inline-block;"></span> Deep Water Pelagic</span>
+            </div>
         </div>
     </div>
 
