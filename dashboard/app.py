@@ -1587,48 +1587,81 @@ if input_mode == "Quick Prediction":
 
 else:
     # Live data mode
-    if GEE_AVAILABLE:
-        fetch_button = st.button("🛰️ Fetch Live Ocean Data", type="primary", key="fetch_data", use_container_width=True)
-        
-        if fetch_button:
+    fetch_button = st.button("🛰️ Fetch Live Ocean Data", type="primary", key="fetch_data", use_container_width=True)
+    
+    if not gee_initialized:
+        st.warning("Google Earth Engine not initialized — using Open-Meteo for live ocean data")
+    
+    if fetch_button:
+        if gee_initialized:
+            # Try GEE first
             with st.spinner("🛰️ Fetching satellite data..."):
                 ocean_data, error = fetch_realtime_data(lat, lon)
-                
                 if error:
-                    st.error(error)
-                    st.session_state.fetched_data = None
+                    st.warning(f"GEE fetch failed: {error}. Trying Open-Meteo...")
+                    ocean_data = None
                 else:
                     st.session_state.fetched_data = ocean_data
                     st.success(f"✅ Data fetched! {ocean_data['note']}")
-        
-        # Display fetched data
-        if st.session_state.fetched_data:
-            data = st.session_state.fetched_data
-            # Display fetched data in main area
-            st.markdown("### 📊 Fetched Data")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("🌡️ Sea Temperature", f"{data['sst']:.2f}°C" if data['sst'] else "N/A")
-            with col2:
-                st.metric("🌊 Current Speed", f"{data['current_speed']:.2f} m/s" if data['current_speed'] else "N/A")
-            
-            st.caption(f"📅 Data from: {data['data_date']}")
-            
-            # Show data source note if available
-            if 'note' in data:
-                st.info(f"ℹ️ {data['note']}")
-            
-            # Use fetched data for prediction
-            sst = data['sst'] if data['sst'] else 28.5
-            current_speed = data['current_speed'] if data['current_speed'] else 2.0
-            current_u = data['current_u'] if data['current_u'] else 1.0
-            current_v = data['current_v'] if data['current_v'] else 1.0
-            
-            st.markdown("---")
-            predict_button = st.button("🎯 Find Fishing Zones", type="primary", key="realtime_predict", use_container_width=True)
         else:
-            st.info("👆 Click 'Fetch Live Data' to get satellite data for the selected location")
-            predict_button = False
+            ocean_data = None
+        
+        # Fallback to Open-Meteo if GEE fails or isn't available
+        if not st.session_state.get('fetched_data'):
+            with st.spinner("🌊 Fetching from Open-Meteo..."):
+                try:
+                    meteo_currents = fetch_open_meteo_currents(lon, lat)
+                    meteo_sst_data = fetch_open_meteo_sst(lon, lat)
+                    
+                    if meteo_currents or meteo_sst_data:
+                        fallback_sst = meteo_sst_data['sst'] if meteo_sst_data else 28.5
+                        fallback_speed = meteo_currents['current_speed'] if meteo_currents else 1.5
+                        fallback_u = meteo_currents['u'] if meteo_currents else 0.9
+                        fallback_v = meteo_currents['v'] if meteo_currents else 0.6
+                        
+                        st.session_state.fetched_data = {
+                            'sst': fallback_sst,
+                            'current_speed': fallback_speed,
+                            'current_u': fallback_u,
+                            'current_v': fallback_v,
+                            'data_date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                            'success': True,
+                            'note': 'SST from Open-Meteo, Currents from Open-Meteo (live)'
+                        }
+                        st.success("✅ Live ocean data fetched from Open-Meteo!")
+                    else:
+                        st.error("Could not fetch data from Open-Meteo. Please try again or use Quick Prediction mode.")
+                except Exception as e:
+                    st.error(f"Open-Meteo fetch failed: {str(e)}. Try Quick Prediction mode.")
+    
+    # Display fetched data
+    if st.session_state.fetched_data:
+        data = st.session_state.fetched_data
+        # Display fetched data in main area
+        st.markdown("### 📊 Fetched Data")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("🌡️ Sea Temperature", f"{data['sst']:.2f}°C" if data['sst'] else "N/A")
+        with col2:
+            st.metric("🌊 Current Speed", f"{data['current_speed']:.2f} m/s" if data['current_speed'] else "N/A")
+        
+        st.caption(f"📅 Data from: {data['data_date']}")
+        
+        # Show data source note if available
+        if 'note' in data:
+            st.info(f"ℹ️ {data['note']}")
+        
+        # Use fetched data for prediction
+        sst = data['sst'] if data['sst'] else 28.5
+        current_speed = data['current_speed'] if data['current_speed'] else 2.0
+        current_u = data['current_u'] if data['current_u'] else 1.0
+        current_v = data['current_v'] if data['current_v'] else 1.0
+        
+        st.markdown("---")
+        predict_button = st.button("🎯 Find Fishing Zones", type="primary", key="realtime_predict", use_container_width=True)
+    else:
+        st.info("👆 Click 'Fetch Live Ocean Data' to get real-time data for the selected location")
+        predict_button = False
 
 # Calculate derived features
 mean_sst = 29.0  # Average from training data
