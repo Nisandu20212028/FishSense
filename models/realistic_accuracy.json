@@ -1,0 +1,9 @@
+{
+  "original_accuracy": 1.0,
+  "accuracy_note": "100% due to deterministic label generation from features",
+  "realistic_accuracy_15pct_noise": 0.8517857142857143,
+  "cv_accuracy_mean": 0.8178571428571428,
+  "cv_accuracy_std": 0.020824828195876086,
+  "spatial_cv_mean": 0.8319915172546751,
+  "spatial_cv_std": 0.04970454939758949
+}

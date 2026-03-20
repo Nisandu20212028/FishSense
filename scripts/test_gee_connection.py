@@ -15,7 +15,7 @@ try:
     ee.Initialize(project='fishsense-480120')
     print("   ✓ Successfully initialized!")
 except Exception as e:
-    print(f"   ✗ Initialization failed!")
+    print("   ✗ Initialization failed!")
     print(f"   Error: {e}")
     print("\n   TROUBLESHOOTING:")
     print("   → Run: earthengine authenticate")
@@ -27,7 +27,7 @@ print("\n2. Testing basic operations...")
 try:
     test_image = ee.Image(1)
     value = test_image.getInfo()
-    print(f"   ✓ Basic operations work!")
+    print("   ✓ Basic operations work!")
 except Exception as e:
     print(f"   ✗ Operation failed: {e}")
     exit()
@@ -38,7 +38,7 @@ try:
     # Try to access NOAA Sea Surface Temperature
     dataset = ee.ImageCollection('NOAA/CDR/SST_WHOI/V2')
     count = dataset.size().getInfo()
-    print(f"   ✓ Can access satellite data!")
+    print("   ✓ Can access satellite data!")
     print(f"   ✓ NOAA SST dataset has {count} images")
 except Exception as e:
     print(f"   ✗ Data access failed: {e}")
@@ -50,8 +50,8 @@ try:
     # Create a point in Colombo, Sri Lanka
     colombo = ee.Geometry.Point([79.8612, 6.9271])
     info = colombo.getInfo()
-    print(f"   ✓ Geographic operations work!")
-    print(f"   ✓ Test location: Colombo, Sri Lanka")
+    print("   ✓ Geographic operations work!")
+    print("   ✓ Test location: Colombo, Sri Lanka")
     print(f"   ✓ Coordinates: {info['coordinates']}")
 except Exception as e:
     print(f"   ✗ Geographic operations failed: {e}")
@@ -63,7 +63,7 @@ try:
     # Define Sri Lankan coastal waters
     sri_lanka_bbox = ee.Geometry.Rectangle([79.5, 5.9, 81.9, 9.9])
     area = sri_lanka_bbox.area().getInfo()
-    print(f"   ✓ Study area defined successfully!")
+    print("   ✓ Study area defined successfully!")
     print(f"   ✓ Study area size: {area/1e9:.2f} km²")
 except Exception as e:
     print(f"   ✗ Study area test failed: {e}")

@@ -41,16 +41,16 @@ print(f"✓ Columns: {list(df.columns)}")
 print("\n📊 Step 2: Initial data exploration...")
 
 print(f"\nDataset shape: {df.shape}")
-print(f"\nFirst few rows:")
+print("\nFirst few rows:")
 print(df.head())
 
-print(f"\nData types:")
+print("\nData types:")
 print(df.dtypes)
 
-print(f"\nMissing values:")
+print("\nMissing values:")
 print(df.isnull().sum())
 
-print(f"\nBasic statistics:")
+print("\nBasic statistics:")
 print(df.describe())
 
 # ============================================================================
@@ -346,8 +346,3 @@ summary = f"""
    ✓ correlation_matrix.png
 """
 
-print(summary)
-print("=" * 70)
-print("\n🎯 Next step: Train Random Forest model!")
-print("   Run: python scripts/train_model.py")
-print("=" * 70)

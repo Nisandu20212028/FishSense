@@ -1,8 +1,3 @@
-"""
-FishSense: Random Forest Model Training
-Trains a Random Forest classifier to predict fishing zones
-"""
-
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -56,10 +51,10 @@ rf_model = RandomForestClassifier(
 )
 
 print("\nModel parameters:")
-print(f"  - Number of trees: 100")
-print(f"  - Max depth: 10")
-print(f"  - Min samples split: 5")
-print(f"  - Min samples leaf: 2")
+print("  - Number of trees: 100")
+print("  - Max depth: 10")
+print("  - Min samples split: 5")
+print("  - Min samples leaf: 2")
 
 print("\nTraining in progress...")
 rf_model.fit(X_train, y_train)
@@ -88,14 +83,27 @@ test_accuracy = accuracy_score(y_test, y_test_pred)
 
 print(f"Test Accuracy: {test_accuracy:.4f} ({test_accuracy*100:.2f}%)")
 
+# Calculate comprehensive evaluation metrics
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+precision = precision_score(y_test, y_test_pred, average='weighted')
+recall = recall_score(y_test, y_test_pred, average='weighted')
+f1 = f1_score(y_test, y_test_pred, average='weighted')
+
+print("\n📈 Comprehensive Metrics:")
+print(f"  • Precision (weighted): {precision:.4f} ({precision*100:.2f}%)")
+print(f"  • Recall (weighted):    {recall:.4f} ({recall*100:.2f}%)")
+print(f"  • F1-Score (weighted):  {f1:.4f} ({f1*100:.2f}%)")
+
 # Detailed classification report
-print("\nDetailed Classification Report:")
+print("\n📋 Detailed Classification Report:")
 print(classification_report(y_test, y_test_pred))
 
 # Confusion Matrix
-print("\nConfusion Matrix:")
+print("\n🔢 Confusion Matrix:")
 cm = confusion_matrix(y_test, y_test_pred)
 print(cm)
+print("\nMatrix Layout: [High, Low, Medium]")
 
 # ============================================================================
 # 5. FEATURE IMPORTANCE
@@ -132,6 +140,9 @@ metadata = {
     'classes': list(rf_model.classes_),
     'train_accuracy': float(train_accuracy),
     'test_accuracy': float(test_accuracy),
+    'precision': float(precision),
+    'recall': float(recall),
+    'f1_score': float(f1),
     'n_train_samples': len(X_train),
     'n_test_samples': len(X_test)
 }
@@ -264,6 +275,3 @@ print(summary)
 for idx, row in feature_importance.head(3).iterrows():
     print(f"   {idx+1}. {row['feature']}: {row['importance']:.4f}")
 
-print("\n" + "=" * 70)
-print("🎯 Next step: Create Streamlit dashboard!")
-print("=" * 70)

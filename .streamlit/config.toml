@@ -1,0 +1,12 @@
+[client]
+showErrorDetails = false
+
+[ui]
+hideTopBar = false
+
+[server]
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false

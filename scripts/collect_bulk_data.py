@@ -1,16 +1,10 @@
-"""
-FishSense: Bulk Data Collection for ML Training
-Collects 500+ data points with SST + Ocean Currents
-Output: CSV file ready for machine learning
-"""
-
 import ee
 import pandas as pd
 import numpy as np
 import math
 from datetime import datetime, timedelta
 
-# Try to import from gee_utils (if it exists and works)
+# import from gee_utils 
 try:
     from gee_utils import initialize_gee, get_study_area
     print("✓ Using gee_utils.py")
@@ -24,7 +18,7 @@ except ImportError:
         try:
             ee.Initialize()
             return True
-        except:
+        except Exception:
             return False
     
     def get_study_area():
@@ -51,9 +45,9 @@ study_area = get_study_area()
 # CONFIGURATION - OPTIMIZED FOR 2-FEATURE MODEL
 # ============================================================================
 
-# Date range: 3 months of data
-start_date = "2023-09-01"
-end_date = "2023-11-30"
+# Date range: 3 months of data (March-May 2023 - Dry season for better chlorophyll coverage)
+start_date = "2023-03-01"
+end_date = "2023-05-31"
 
 # Sample every 7 days (gets us ~13 time points)
 sample_interval_days = 7
@@ -62,8 +56,8 @@ sample_interval_days = 7
 num_lat_points = 10
 num_lon_points = 10
 
-print("\n🎯 2-FEATURE MODEL: SST + Ocean Currents")
-print("   (Chlorophyll integration planned for future enhancement)")
+print("\n🎯 3-FEATURE MODEL: SST + Chlorophyll-a + Ocean Currents")
+print("   Using ESA Ocean Color CCI chlorophyll-a (multi-satellite merged)")
 
 print("CONFIGURATION:")
 print(f"  📅 Date range: {start_date} to {end_date}")
@@ -146,7 +140,31 @@ for date_str in sample_dates:
         continue
     
     # ========================================================================
-    # 2. GET OCEAN CURRENTS
+    # 2. GET CHLOROPHYLL-A (MODIS Aqua)
+    # ========================================================================
+    
+    try:
+        # Copernicus Ocean Color CCI - Merges multiple satellites for better coverage
+        # This dataset combines MODIS, VIIRS, SeaWiFS, MERIS for gap-filling
+        # Coverage: 1997-2024
+        chlor_collection = ee.ImageCollection('COPERNICUS/MARINE/SATELLITE_OCEAN_COLOR_V6') \
+            .filterDate(date_start, date_end) \
+            .filterBounds(study_area)
+        
+        chlor_count = chlor_collection.size().getInfo()
+        
+        if chlor_count > 0:
+            chlor_image = chlor_collection.first()
+        else:
+            print(f"  ⚠️  No chlorophyll data for {date_str}, using None values...")
+            chlor_image = None  # Will result in None values for this date
+    
+    except Exception as e:
+        print(f"  ⚠️  Chlorophyll Error: {str(e)[:80]}, using None values...")
+        chlor_image = None
+    
+    # ========================================================================
+    # 3. GET OCEAN CURRENTS
     # ========================================================================
     
     try:
@@ -166,7 +184,7 @@ for date_str in sample_dates:
         continue
     
     # ========================================================================
-    # 3. SAMPLE AT ALL POINTS
+    # 4. SAMPLE AT ALL POINTS
     # ========================================================================
     
     valid_samples = 0
@@ -181,6 +199,21 @@ for date_str in sample_dates:
                 scale=25000,
                 numPixels=1
             ).getInfo()
+            
+            # Sample Chlorophyll-a (if available)
+            chlor_a = None
+            if chlor_image is not None:
+                try:
+                    chlor_sample = chlor_image.select('chlor_a').sample(
+                        region=point,
+                        scale=4000,  # Ocean Color CCI resolution ~4km
+                        numPixels=1
+                    ).getInfo()
+                    
+                    if chlor_sample and chlor_sample['features']:
+                        chlor_a = chlor_sample['features'][0]['properties'].get('chlor_a')
+                except Exception:
+                    chlor_a = None
             
             # Sample Currents
             current_sample = current_image.select(['velocity_u_0', 'velocity_v_0']).sample(
@@ -225,6 +258,7 @@ for date_str in sample_dates:
                     'longitude': lon,
                     'latitude': lat,
                     'sst_celsius': sst_celsius,
+                    'chlor_a_mg_m3': chlor_a,  # Chlorophyll-a concentration
                     'current_u_m_s': current_u_ms,
                     'current_v_m_s': current_v_ms,
                     'current_speed_m_s': current_speed,
@@ -256,37 +290,42 @@ if len(all_data) > 0:
     output_file = f"data/fishsense_training_data_{start_date}_to_{end_date}.csv"
     df.to_csv(output_file, index=False)
     
-    print(f"\n✅ SUCCESS!")
+    print("\n✅ SUCCESS!")
     print(f"📁 File saved: {output_file}")
     print(f"📊 Total data points: {len(df)}")
-    print(f"\n📈 DATA SUMMARY:")
+    print("\n📈 DATA SUMMARY:")
     print(f"  • Date range: {df['date'].min()} to {df['date'].max()}")
     print(f"  • Unique dates: {df['date'].nunique()}")
     print(f"  • Unique locations: {len(df.groupby(['longitude', 'latitude']))}")
     
     # Data quality stats
     sst_valid = df['sst_celsius'].notna().sum()
+    chlor_valid = df['chlor_a_mg_m3'].notna().sum()
     current_valid = df['current_speed_m_s'].notna().sum()
-    both_valid = ((df['sst_celsius'].notna()) & (df['current_speed_m_s'].notna())).sum()
+    all_three_valid = ((df['sst_celsius'].notna()) & (df['chlor_a_mg_m3'].notna()) & (df['current_speed_m_s'].notna())).sum()
     
-    print(f"\n🔍 DATA QUALITY:")
+    print("\n🔍 DATA QUALITY:")
     print(f"  • SST available: {sst_valid}/{len(df)} ({(sst_valid/len(df)*100):.1f}%)")
+    print(f"  • Chlorophyll-a available: {chlor_valid}/{len(df)} ({(chlor_valid/len(df)*100):.1f}%)")
     print(f"  • Current available: {current_valid}/{len(df)} ({(current_valid/len(df)*100):.1f}%)")
-    print(f"  • Both features: {both_valid}/{len(df)} ({(both_valid/len(df)*100):.1f}%)")
+    print(f"  • All 3 features: {all_three_valid}/{len(df)} ({(all_three_valid/len(df)*100):.1f}%)")
     
-    if both_valid >= 300:
-        print(f"\n✅ EXCELLENT! {both_valid} complete samples - ready for ML training!")
-    elif both_valid >= 150:
-        print(f"\n✅ GOOD! {both_valid} complete samples - sufficient for prototype")
+    if all_three_valid >= 300:
+        print(f"\n✅ EXCELLENT! {all_three_valid} complete samples - ready for ML training!")
+    elif all_three_valid >= 150:
+        print(f"\n✅ GOOD! {all_three_valid} complete samples - sufficient for prototype")
+    elif chlor_valid >= 200:
+        print(f"\n⚠️  NOTE: {chlor_valid} chlorophyll samples, {all_three_valid} with all features")
+        print(f"   Chlorophyll often missing due to clouds - this is normal")
     else:
-        print(f"\n⚠️  WARNING: Only {both_valid} complete samples - may need more data")
+        print("\n⚠️  WARNING: Only {all_three_valid} complete samples - may need more data")
     
     # Show sample data
-    print(f"\n📋 SAMPLE DATA (first 5 rows):")
+    print("\n📋 SAMPLE DATA (first 5 rows):")
     print(df.head().to_string())
     
     # Statistics
-    print(f"\n📊 FEATURE STATISTICS:")
+    print("\n📊 FEATURE STATISTICS:")
     print(df.describe())
     
 else:

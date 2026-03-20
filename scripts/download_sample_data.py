@@ -354,11 +354,5 @@ for dtype, pattern in [('SST', 'sst_sample_*.json'),
     else:
         print(f"  ❌ {dtype}: No data file found")
 
-print("\n💡 Next Steps:")
-print("   1. Check the data quality percentages above")
-print("   2. If < 50% valid data, try a different date range")
-print("   3. If data looks good, proceed to visualization")
-print("   4. For ML training, you'll need 500+ total data points")
-
 print("\n📁 All data saved to: {}/".format(data_dir))
 print("=" * 70)

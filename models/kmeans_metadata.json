@@ -1,0 +1,32 @@
+{
+  "model_type": "KMeans",
+  "n_clusters": 3,
+  "init": "k-means++",
+  "n_iterations": 14,
+  "inertia": 1713.330241945208,
+  "features": [
+    "sst_celsius",
+    "current_speed_m_s",
+    "current_u_m_s",
+    "current_v_m_s",
+    "temp_deviation",
+    "lon_normalized",
+    "lat_normalized"
+  ],
+  "train_accuracy": 0.5267857142857143,
+  "test_accuracy": 0.5267857142857143,
+  "precision": 0.2775031887755102,
+  "recall": 0.5267857142857143,
+  "f1_score": 0.36351294903926484,
+  "silhouette_score": 0.32029345935460796,
+  "davies_bouldin_index": 1.1465425236961804,
+  "adjusted_rand_index": 0.09532725645287982,
+  "training_time_seconds": 1.474555253982544,
+  "cluster_mapping": {
+    "0": "High",
+    "1": "High",
+    "2": "High"
+  },
+  "n_train_samples": 448,
+  "n_test_samples": 112
+}
