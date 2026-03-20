@@ -857,12 +857,29 @@ def initialize_gee():
     try:
         # Method 1: Streamlit Cloud - use service account from secrets
         if 'gee_service_account' in st.secrets:
-            service_account = st.secrets['gee_service_account']['client_email']
-            key_data = json.dumps(dict(st.secrets['gee_service_account']))
+            import tempfile
+            
+            # Convert Streamlit's AttrDict to a regular dict recursively
+            secret_dict = {}
+            for key in st.secrets['gee_service_account']:
+                secret_dict[key] = str(st.secrets['gee_service_account'][key])
+            
+            # Write service account JSON to temp file (most reliable method)
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+                json.dump(secret_dict, f)
+                key_file_path = f.name
+            
+            service_account = secret_dict['client_email']
             credentials = ee.ServiceAccountCredentials(
-                service_account, key_data=key_data
+                service_account, key_file=key_file_path
             )
             ee.Initialize(credentials=credentials, project='fishsense-480120')
+            
+            # Clean up temp file
+            try:
+                os.remove(key_file_path)
+            except Exception:
+                pass
         else:
             # Method 2: Local development - use local auth
             ee.Initialize(project='fishsense-480120')
@@ -871,8 +888,8 @@ def initialize_gee():
         ee.Number(1).getInfo()
         return True
     except Exception as e:
-        # Show error for debugging
-        error_msg = str(e)[:200]
+        # Show error for debugging (visible in Streamlit Cloud logs)
+        error_msg = str(e)[:300]
         print(f"GEE Init Error: {error_msg}")
         return False
 
