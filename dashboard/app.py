@@ -849,20 +849,30 @@ components.html("""
 #============================================================================
 # GOOGLE EARTH ENGINE INITIALIZATION
 #============================================================================
-@st.cache_resource
 def initialize_gee():
     """Initialize Google Earth Engine (supports local auth & Streamlit Cloud)"""
     if not GEE_AVAILABLE:
+        print("GEE: earthengine-api not installed")
         return False
     try:
-        # Method 1: Streamlit Cloud - use service account from secrets
-        if 'gee_service_account' in st.secrets:
+        # Check if Streamlit secrets has GEE service account
+        has_secrets = False
+        try:
+            if hasattr(st, 'secrets') and 'gee_service_account' in st.secrets:
+                has_secrets = True
+                print("GEE: Found service account in Streamlit secrets")
+        except Exception:
+            print("GEE: No Streamlit secrets file found")
+        
+        if has_secrets:
             import tempfile
             
-            # Convert Streamlit's AttrDict to a regular dict recursively
+            # Convert Streamlit's AttrDict to a regular dict
             secret_dict = {}
             for key in st.secrets['gee_service_account']:
                 secret_dict[key] = str(st.secrets['gee_service_account'][key])
+            
+            print(f"GEE: Service account email = {secret_dict.get('client_email', 'NOT FOUND')}")
             
             # Write service account JSON to temp file (most reliable method)
             with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
@@ -874,6 +884,7 @@ def initialize_gee():
                 service_account, key_file=key_file_path
             )
             ee.Initialize(credentials=credentials, project='fishsense-480120')
+            print("GEE: Initialized with service account credentials")
             
             # Clean up temp file
             try:
@@ -881,15 +892,18 @@ def initialize_gee():
             except Exception:
                 pass
         else:
-            # Method 2: Local development - use local auth
+            # Local development - use local auth
+            print("GEE: Trying local authentication")
             ee.Initialize(project='fishsense-480120')
+            print("GEE: Initialized with local credentials")
         
         # Test if it works
         ee.Number(1).getInfo()
+        print("GEE: Connection test PASSED")
         return True
     except Exception as e:
         # Show error for debugging (visible in Streamlit Cloud logs)
-        error_msg = str(e)[:300]
+        error_msg = str(e)[:500]
         print(f"GEE Init Error: {error_msg}")
         return False
 
