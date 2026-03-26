@@ -1410,6 +1410,34 @@ else:
 
 st.markdown("---")
 
+# Determine current step for the progress indicator
+has_conditions = (input_mode == "Quick Prediction") or (st.session_state.get('fetched_data') is not None)
+has_prediction = st.session_state.get('last_prediction') is not None
+
+step1_color = "#a78bfa"  # always active
+step2_color = "#a78bfa" if has_conditions else "#475569"
+step3_color = "#22c55e" if has_prediction else "#475569"
+
+st.markdown(f"""
+<div style="display: flex; align-items: center; justify-content: center; gap: 0; margin: 0.5rem 0 1.5rem 0;">
+    <div style="text-align: center; flex: 1;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: {step1_color}; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">1</div>
+        <div style="font-size: 0.72rem; color: {step1_color}; margin-top: 4px;">Select Mode</div>
+    </div>
+    <div style="flex: 1; height: 2px; background: {step2_color}; margin-top: -18px;"></div>
+    <div style="text-align: center; flex: 1;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: {step2_color}; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">2</div>
+        <div style="font-size: 0.72rem; color: {step2_color}; margin-top: 4px;">Set Conditions</div>
+    </div>
+    <div style="flex: 1; height: 2px; background: {step3_color}; margin-top: -18px;"></div>
+    <div style="text-align: center; flex: 1;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: {step3_color}; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">3</div>
+        <div style="font-size: 0.72rem; color: {step3_color}; margin-top: 4px;">View Results</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
 # Initialize default values (will be overridden by mode-specific inputs)
 sst = 28.5
 current_speed = 2.0
@@ -1467,136 +1495,135 @@ if input_mode == "Quick Prediction":
 
 
 #============================================================================
-# LOCATION INPUT (MAIN AREA)
+# LOCATION INPUT (collapsible)
 #============================================================================
-st.markdown("<h3 style='color: #ffffff;'>📍 Choose Your Fishing Location</h3>", unsafe_allow_html=True)
+with st.expander("📍 Choose Your Fishing Location", expanded=not has_prediction):
 
-# --- POPULAR FISHING SPOTS PRESETS ---
-fishing_spots = {
-    "📍 Select a location...": None,
-    "🐟 Negombo (West Coast)": {"lon": 79.0, "lat": 7.2},
-    "🐟 Chilaw (West Coast)": {"lon": 79.1, "lat": 7.6},
-    "🐟 Kalpitiya (Northwest)": {"lon": 79.2, "lat": 8.3},
-    "🐟 Galle (South Coast)": {"lon": 79.9, "lat": 5.7},
-    "🐟 Matara (South Coast)": {"lon": 80.4, "lat": 5.5},
-    "🐟 Trincomalee (East Coast)": {"lon": 82.0, "lat": 8.6},
-    "🐟 Batticaloa (East Coast)": {"lon": 82.2, "lat": 7.7},
-    "🐟 Jaffna (North)": {"lon": 79.7, "lat": 10.0},
-    "🐟 Mannar (Northwest)": {"lon": 79.2, "lat": 9.2},
-    "🐟 Hambantota (South)": {"lon": 81.3, "lat": 5.7},
-}
+    # --- POPULAR FISHING SPOTS PRESETS ---
+    fishing_spots = {
+        "📍 Select a location...": None,
+        "🐟 Negombo (West Coast)": {"lon": 79.0, "lat": 7.2},
+        "🐟 Chilaw (West Coast)": {"lon": 79.1, "lat": 7.6},
+        "🐟 Kalpitiya (Northwest)": {"lon": 79.2, "lat": 8.3},
+        "🐟 Galle (South Coast)": {"lon": 79.9, "lat": 5.7},
+        "🐟 Matara (South Coast)": {"lon": 80.4, "lat": 5.5},
+        "🐟 Trincomalee (East Coast)": {"lon": 82.0, "lat": 8.6},
+        "🐟 Batticaloa (East Coast)": {"lon": 82.2, "lat": 7.7},
+        "🐟 Jaffna (North)": {"lon": 79.7, "lat": 10.0},
+        "🐟 Mannar (Northwest)": {"lon": 79.2, "lat": 9.2},
+        "🐟 Hambantota (South)": {"lon": 81.3, "lat": 5.7},
+    }
 
-# Initialize session state for location
-if 'selected_lat' not in st.session_state:
-    st.session_state.selected_lat = 6.5
-if 'selected_lon' not in st.session_state:
-    st.session_state.selected_lon = 79.2
+    # Initialize session state for location
+    if 'selected_lat' not in st.session_state:
+        st.session_state.selected_lat = 6.5
+    if 'selected_lon' not in st.session_state:
+        st.session_state.selected_lon = 79.2
 
-selected_spot = st.selectbox(
-    "🏝️ Quick Select: Popular Fishing Spots",
-    options=list(fishing_spots.keys()),
-    help="Choose a well-known fishing location to auto-fill coordinates"
-)
-
-# Update session state if a preset was selected
-if fishing_spots[selected_spot] is not None:
-    st.session_state.selected_lat = fishing_spots[selected_spot]["lat"]
-    st.session_state.selected_lon = fishing_spots[selected_spot]["lon"]
-
-# --- CLICKABLE MAP ---
-st.markdown("<p style='color: #a78bfa; font-size: 0.9rem; margin-bottom: 0.3rem;'>🗺️ Or click on the map to select your fishing spot:</p>", unsafe_allow_html=True)
-
-# Create a small clickable map
-click_map = folium.Map(
-    location=[7.5, 80.0],
-    zoom_start=7,
-    tiles='OpenStreetMap',
-    width='100%',
-    height=250
-)
-
-# Add study area boundary
-folium.Rectangle(
-    bounds=[[4.5, 77.0], [11.0, 83.5]],
-    color='#8b5cf6',
-    fill=False,
-    weight=2,
-    dash_array='5',
-    popup='Study Area: Sri Lankan Waters'
-).add_to(click_map)
-
-# Add Sri Lanka outline for reference
-folium.Rectangle(
-    bounds=[[5.9, 79.5], [9.9, 81.9]],
-    color='#ef4444',
-    fill=True,
-    fillColor='#ef4444',
-    fillOpacity=0.1,
-    weight=1,
-    popup='Land Area (avoid)'
-).add_to(click_map)
-
-# Show current selection on the click map
-folium.CircleMarker(
-    location=[st.session_state.selected_lat, st.session_state.selected_lon],
-    radius=8,
-    color='#22c55e',
-    fill=True,
-    fillColor='#22c55e',
-    fillOpacity=0.8,
-    popup=f"Selected: [{st.session_state.selected_lat:.2f}, {st.session_state.selected_lon:.2f}]"
-).add_to(click_map)
-
-# Render interactive map (captures clicks)
-map_data = st_folium(click_map, height=250, width=None, key="location_picker")
-
-# Update coordinates from map click
-if map_data and map_data.get('last_clicked'):
-    clicked_lat = map_data['last_clicked']['lat']
-    clicked_lon = map_data['last_clicked']['lng']
-    # Clamp to study area
-    clicked_lat = max(4.5, min(11.0, clicked_lat))
-    clicked_lon = max(77.0, min(83.5, clicked_lon))
-    st.session_state.selected_lat = round(clicked_lat, 2)
-    st.session_state.selected_lon = round(clicked_lon, 2)
-
-st.markdown("---")
-
-# --- MANUAL COORDINATE INPUTS ---
-st.markdown("<p style='color: #94a3b8; font-size: 0.85rem;'>✏️ Or enter coordinates manually:</p>", unsafe_allow_html=True)
-col1, col2 = st.columns(2)
-with col1:
-    lon = st.number_input(
-        "Longitude",
-        min_value=77.0,
-        max_value=83.5,
-        value=st.session_state.selected_lon,
-        step=0.1,
-        format="%.2f",
-        help="Sri Lankan waters: 77.0°E to 83.5°E"
-    )
-with col2:
-    lat = st.number_input(
-        "Latitude",
-        min_value=4.5,
-        max_value=11.0,
-        value=st.session_state.selected_lat,
-        step=0.1,
-        format="%.2f",
-        help="Sri Lankan waters: 4.5°N to 11.0°N"
+    selected_spot = st.selectbox(
+        "🏝️ Quick Select: Popular Fishing Spots",
+        options=list(fishing_spots.keys()),
+        help="Choose a well-known fishing location to auto-fill coordinates"
     )
 
-# Sync manual input back to session state
-st.session_state.selected_lat = lat
-st.session_state.selected_lon = lon
+    # Update session state if a preset was selected
+    if fishing_spots[selected_spot] is not None:
+        st.session_state.selected_lat = fishing_spots[selected_spot]["lat"]
+        st.session_state.selected_lon = fishing_spots[selected_spot]["lon"]
 
-# Validate if coordinates are on land (Sri Lankan land mass)
-# Sri Lanka roughly: 79.5°E to 81.9°E longitude, 5.9°N to 9.9°N latitude
-if 79.5 <= lon <= 81.9 and 5.9 <= lat <= 9.9:
-    st.warning("⚠️ **Warning**: These coordinates appear to be on LAND (Sri Lanka mainland). This model predicts ocean fishing zones. Please select coordinates in the ocean:\n- **West coast**: Longitude < 79.5 (e.g., 79.2)\n- **East coast**: Longitude > 81.9 (e.g., 82.1)")
-    st.info("💡 **Suggested ocean locations**:\n- West: Lon=79.2, Lat=6.5\n- East: Lon=82.1, Lat=7.5\n- Northwest: Lon=79.3, Lat=8.5")
+    # --- CLICKABLE MAP ---
+    st.markdown("<p style='color: #a78bfa; font-size: 0.9rem; margin-bottom: 0.3rem;'>🗺️ Or click on the map to select your fishing spot:</p>", unsafe_allow_html=True)
 
-st.markdown("---")
+    # Create a small clickable map
+    click_map = folium.Map(
+        location=[7.5, 80.0],
+        zoom_start=7,
+        tiles='OpenStreetMap',
+        width='100%',
+        height=250
+    )
+
+    # Add study area boundary
+    folium.Rectangle(
+        bounds=[[4.5, 77.0], [11.0, 83.5]],
+        color='#8b5cf6',
+        fill=False,
+        weight=2,
+        dash_array='5',
+        popup='Study Area: Sri Lankan Waters'
+    ).add_to(click_map)
+
+    # Add Sri Lanka outline for reference
+    folium.Rectangle(
+        bounds=[[5.9, 79.5], [9.9, 81.9]],
+        color='#ef4444',
+        fill=True,
+        fillColor='#ef4444',
+        fillOpacity=0.1,
+        weight=1,
+        popup='Land Area (avoid)'
+    ).add_to(click_map)
+
+    # Show current selection on the click map
+    folium.CircleMarker(
+        location=[st.session_state.selected_lat, st.session_state.selected_lon],
+        radius=8,
+        color='#22c55e',
+        fill=True,
+        fillColor='#22c55e',
+        fillOpacity=0.8,
+        popup=f"Selected: [{st.session_state.selected_lat:.2f}, {st.session_state.selected_lon:.2f}]"
+    ).add_to(click_map)
+
+    # Render interactive map (captures clicks)
+    map_data = st_folium(click_map, height=250, width=None, key="location_picker")
+
+    # Update coordinates from map click
+    if map_data and map_data.get('last_clicked'):
+        clicked_lat = map_data['last_clicked']['lat']
+        clicked_lon = map_data['last_clicked']['lng']
+        # Clamp to study area
+        clicked_lat = max(4.5, min(11.0, clicked_lat))
+        clicked_lon = max(77.0, min(83.5, clicked_lon))
+        st.session_state.selected_lat = round(clicked_lat, 2)
+        st.session_state.selected_lon = round(clicked_lon, 2)
+
+    st.markdown("---")
+
+    # --- MANUAL COORDINATE INPUTS ---
+    st.markdown("<p style='color: #94a3b8; font-size: 0.85rem;'>✏️ Or enter coordinates manually:</p>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        lon = st.number_input(
+            "Longitude",
+            min_value=77.0,
+            max_value=83.5,
+            value=st.session_state.selected_lon,
+            step=0.1,
+            format="%.2f",
+            help="Sri Lankan waters: 77.0°E to 83.5°E"
+        )
+    with col2:
+        lat = st.number_input(
+            "Latitude",
+            min_value=4.5,
+            max_value=11.0,
+            value=st.session_state.selected_lat,
+            step=0.1,
+            format="%.2f",
+            help="Sri Lankan waters: 4.5°N to 11.0°N"
+        )
+
+    # Sync manual input back to session state
+    st.session_state.selected_lat = lat
+    st.session_state.selected_lon = lon
+
+    # Validate if coordinates are on land (Sri Lankan land mass)
+    # Sri Lanka roughly: 79.5°E to 81.9°E longitude, 5.9°N to 9.9°N latitude
+    if 79.5 <= lon <= 81.9 and 5.9 <= lat <= 9.9:
+        st.warning("⚠️ **Warning**: These coordinates appear to be on LAND (Sri Lanka mainland). This model predicts ocean fishing zones. Please select coordinates in the ocean:\n- **West coast**: Longitude < 79.5 (e.g., 79.2)\n- **East coast**: Longitude > 81.9 (e.g., 82.1)")
+        st.info("💡 **Suggested ocean locations**:\n- West: Lon=79.2, Lat=6.5\n- East: Lon=82.1, Lat=7.5\n- Northwest: Lon=79.3, Lat=8.5")
+
 
 # Initialize session state for fetched data
 if 'fetched_data' not in st.session_state:
@@ -1701,6 +1728,10 @@ lat_normalized = (lat - 5.9) / (9.9 - 5.9)
 #============================================================================
 # MAIN CONTENT - 2 COLUMNS
 #============================================================================
+
+# Auto-scroll anchor
+st.markdown('<div id="results-section"></div>', unsafe_allow_html=True)
+
 col1, col2 = st.columns([1.5, 1.5])
 
 
@@ -1744,6 +1775,16 @@ with col1:
         
         # Make prediction
         prediction = model.predict(features_scaled)[0]
+        st.session_state.last_prediction = prediction
+        
+        # Auto-scroll to results
+        import streamlit.components.v1 as components
+        components.html("""
+            <script>
+                const target = window.parent.document.getElementById('results-section');
+                if (target) { target.scrollIntoView({behavior: 'smooth', block: 'start'}); }
+            </script>
+        """, height=0)
         
         # Color mapping
         color_map = {
