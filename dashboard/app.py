@@ -1755,7 +1755,7 @@ with col1:
         if 'prediction_history' not in st.session_state:
             st.session_state.prediction_history = []
         st.session_state.prediction_history.append({
-            'time': datetime.now().strftime('%H:%M:%S'),
+            'time': (datetime.now() + timedelta(hours=5, minutes=30)).strftime('%H:%M:%S'),
             'lat': f"{lat:.2f}°N",
             'lon': f"{lon:.2f}°E",
             'sst': f"{sst:.1f}°C",
