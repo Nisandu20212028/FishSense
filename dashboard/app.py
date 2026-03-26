@@ -1380,39 +1380,6 @@ st.markdown("""
 
 st.markdown("---")
 
-#============================================================================
-# INPUT CONTROLS - MAIN AREA (NO SIDEBAR)
-#============================================================================
-
-# Model metrics moved to sidebar
-
-# MODE SELECTION
-st.markdown("### 🎛️ How would you like to predict?")
-col1, col2 = st.columns(2)
-with col1:
-    quick_mode = st.button("🎯 Quick Prediction", type="primary", use_container_width=True)
-with col2:
-    live_mode = st.button("🛰️ Live Ocean Data", use_container_width=True)
-
-# Store mode in session state
-if 'input_mode' not in st.session_state:
-    st.session_state.input_mode = "Live Ocean Data"
-
-if quick_mode:
-    st.session_state.input_mode = "Quick Prediction"
-elif live_mode:
-    st.session_state.input_mode = "Live Ocean Data"
-
-input_mode = st.session_state.input_mode
-
-# Mode description
-if input_mode == "Quick Prediction":
-    st.info("💡 **Quick Prediction**: Perfect when you know the ocean conditions or want to test different scenarios.")
-else:
-    st.info("💡 **Live Ocean Data**: Automatically fetches real satellite data for your location. May use historical data if current data unavailable.")
-
-
-st.markdown("---")
 
 #============================================================================
 # LOCATION INPUT (MAIN AREA)
@@ -1544,6 +1511,35 @@ if 79.5 <= lon <= 81.9 and 5.9 <= lat <= 9.9:
     st.warning("⚠️ **Warning**: These coordinates appear to be on LAND (Sri Lanka mainland). This model predicts ocean fishing zones. Please select coordinates in the ocean:\n- **West coast**: Longitude < 79.5 (e.g., 79.2)\n- **East coast**: Longitude > 81.9 (e.g., 82.1)")
     st.info("💡 **Suggested ocean locations**:\n- West: Lon=79.2, Lat=6.5\n- East: Lon=82.1, Lat=7.5\n- Northwest: Lon=79.3, Lat=8.5")
 
+
+st.markdown("---")
+
+#============================================================================
+# MODE SELECTION
+#============================================================================
+st.markdown("### 🎛️ How would you like to predict?")
+col1, col2 = st.columns(2)
+with col1:
+    quick_mode = st.button("🎯 Quick Prediction", type="primary", use_container_width=True)
+with col2:
+    live_mode = st.button("🛰️ Live Ocean Data", use_container_width=True)
+
+# Store mode in session state
+if 'input_mode' not in st.session_state:
+    st.session_state.input_mode = "Live Ocean Data"
+
+if quick_mode:
+    st.session_state.input_mode = "Quick Prediction"
+elif live_mode:
+    st.session_state.input_mode = "Live Ocean Data"
+
+input_mode = st.session_state.input_mode
+
+# Mode description
+if input_mode == "Quick Prediction":
+    st.info("💡 **Quick Prediction**: Perfect when you know the ocean conditions or want to test different scenarios.")
+else:
+    st.info("💡 **Live Ocean Data**: Automatically fetches real satellite data for your location. May use historical data if current data unavailable.")
 
 st.markdown("---")
 
