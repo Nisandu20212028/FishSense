@@ -2215,39 +2215,22 @@ if st.session_state.get('prediction_history') and len(st.session_state.predictio
     st.markdown("<h2 style='color: #ffffff;'>📋 Prediction History</h2>", unsafe_allow_html=True)
     st.caption("Your recent predictions this session — compare different spots to find the best one!")
     
-    # Build HTML table
-    result_colors = {'High': '#22c55e', 'Medium': '#f59e0b', 'Low': '#ef4444'}
-    rows_html = ""
-    for i, entry in enumerate(reversed(st.session_state.prediction_history)):
-        rc = result_colors.get(entry['result'], '#8b5cf6')
-        bg = 'rgba(30, 41, 59, 0.6)' if i % 2 == 0 else 'rgba(30, 41, 59, 0.3)'
-        rows_html += f"""
-        <tr style="background: {bg};">
-            <td style="padding: 8px 12px;">{entry['time']}</td>
-            <td style="padding: 8px 12px;">{entry['lat']}, {entry['lon']}</td>
-            <td style="padding: 8px 12px;">{entry['sst']}</td>
-            <td style="padding: 8px 12px;">{entry['current']}</td>
-            <td style="padding: 8px 12px;"><span style="background: {rc}; color: white; padding: 3px 10px; border-radius: 12px; font-weight: 600; font-size: 0.85rem;">{entry['result']}</span></td>
-        </tr>"""
+    # Build dataframe from history
+    import pandas as pd
+    result_emoji = {'High': '🟢 High', 'Medium': '🟠 Medium', 'Low': '🔴 Low'}
+    history_data = []
+    for entry in reversed(st.session_state.prediction_history):
+        history_data.append({
+            '🕐 Time': entry['time'],
+            '📍 Location': f"{entry['lat']}, {entry['lon']}",
+            '🌡️ SST': entry['sst'],
+            '🌊 Current': entry['current'],
+            '🎯 Result': result_emoji.get(entry['result'], entry['result'])
+        })
     
-    st.markdown(f"""
-    <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; color: #e2e8f0; font-size: 0.9rem;">
-        <thead>
-            <tr style="border-bottom: 2px solid #475569;">
-                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🕐 Time</th>
-                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">📍 Location</th>
-                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🌡️ SST</th>
-                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🌊 Current</th>
-                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🎯 Result</th>
-            </tr>
-        </thead>
-        <tbody>
-            {rows_html}
-        </tbody>
-    </table>
-    </div>
-    """, unsafe_allow_html=True)
+    df_history = pd.DataFrame(history_data)
+    st.dataframe(df_history, use_container_width=True, hide_index=True)
+
 
 #============================================================================
 # BOTTOM SECTION: MODEL PERFORMANCE
