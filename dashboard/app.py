@@ -2156,7 +2156,7 @@ with col2:
         <div class='info-card' style='text-align: center; padding: 3rem 2rem;'>
             <div style='font-size: 3rem; margin-bottom: 1rem;'>🎯</div>
             <h3>Ready to Predict!</h3>
-            <p>Adjust the ocean conditions in the sidebar and click <strong>'Find Fishing Zones'</strong> to get your prediction.</p>
+            <p>Select a prediction mode above, set your ocean conditions and location, then click <strong>'Find Fishing Zones'</strong> to get your prediction.</p>
         </div>
         """, unsafe_allow_html=True)
 
