@@ -1751,6 +1751,20 @@ with col1:
         prediction = model.predict(features_scaled)[0]
         st.session_state.last_prediction = prediction
         
+        # Add to prediction history
+        if 'prediction_history' not in st.session_state:
+            st.session_state.prediction_history = []
+        st.session_state.prediction_history.append({
+            'time': datetime.now().strftime('%H:%M:%S'),
+            'lat': f"{lat:.2f}°N",
+            'lon': f"{lon:.2f}°E",
+            'sst': f"{sst:.1f}°C",
+            'current': f"{current_speed:.1f} m/s",
+            'result': prediction
+        })
+        # Keep only last 10
+        st.session_state.prediction_history = st.session_state.prediction_history[-10:]
+        
         # Auto-scroll to results
         import streamlit.components.v1 as components
         components.html("""
@@ -2192,6 +2206,48 @@ with col2:
         """, unsafe_allow_html=True)
 
 
+
+#============================================================================
+# PREDICTION HISTORY
+#============================================================================
+if st.session_state.get('prediction_history') and len(st.session_state.prediction_history) > 0:
+    st.markdown("---")
+    st.markdown("<h2 style='color: #ffffff;'>📋 Prediction History</h2>", unsafe_allow_html=True)
+    st.caption("Your recent predictions this session — compare different spots to find the best one!")
+    
+    # Build HTML table
+    result_colors = {'High': '#22c55e', 'Medium': '#f59e0b', 'Low': '#ef4444'}
+    rows_html = ""
+    for i, entry in enumerate(reversed(st.session_state.prediction_history)):
+        rc = result_colors.get(entry['result'], '#8b5cf6')
+        bg = 'rgba(30, 41, 59, 0.6)' if i % 2 == 0 else 'rgba(30, 41, 59, 0.3)'
+        rows_html += f"""
+        <tr style="background: {bg};">
+            <td style="padding: 8px 12px;">{entry['time']}</td>
+            <td style="padding: 8px 12px;">{entry['lat']}, {entry['lon']}</td>
+            <td style="padding: 8px 12px;">{entry['sst']}</td>
+            <td style="padding: 8px 12px;">{entry['current']}</td>
+            <td style="padding: 8px 12px;"><span style="background: {rc}; color: white; padding: 3px 10px; border-radius: 12px; font-weight: 600; font-size: 0.85rem;">{entry['result']}</span></td>
+        </tr>"""
+    
+    st.markdown(f"""
+    <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; color: #e2e8f0; font-size: 0.9rem;">
+        <thead>
+            <tr style="border-bottom: 2px solid #475569;">
+                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🕐 Time</th>
+                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">📍 Location</th>
+                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🌡️ SST</th>
+                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🌊 Current</th>
+                <th style="padding: 10px 12px; text-align: left; color: #a78bfa;">🎯 Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {rows_html}
+        </tbody>
+    </table>
+    </div>
+    """, unsafe_allow_html=True)
 
 #============================================================================
 # BOTTOM SECTION: MODEL PERFORMANCE
