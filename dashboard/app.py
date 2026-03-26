@@ -1410,33 +1410,7 @@ else:
 
 st.markdown("---")
 
-# Determine current step for the progress indicator
-has_conditions = (input_mode == "Quick Prediction") or (st.session_state.get('fetched_data') is not None)
 has_prediction = st.session_state.get('last_prediction') is not None
-
-step1_color = "#a78bfa"  # always active
-step2_color = "#a78bfa" if has_conditions else "#475569"
-step3_color = "#22c55e" if has_prediction else "#475569"
-
-st.markdown(f"""
-<div style="display: flex; align-items: center; justify-content: center; gap: 0; margin: 0.5rem 0 1.5rem 0;">
-    <div style="text-align: center; flex: 1;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: {step1_color}; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">1</div>
-        <div style="font-size: 0.72rem; color: {step1_color}; margin-top: 4px;">Select Mode</div>
-    </div>
-    <div style="flex: 1; height: 2px; background: {step2_color}; margin-top: -18px;"></div>
-    <div style="text-align: center; flex: 1;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: {step2_color}; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">2</div>
-        <div style="font-size: 0.72rem; color: {step2_color}; margin-top: 4px;">Set Conditions</div>
-    </div>
-    <div style="flex: 1; height: 2px; background: {step3_color}; margin-top: -18px;"></div>
-    <div style="text-align: center; flex: 1;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: {step3_color}; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">3</div>
-        <div style="font-size: 0.72rem; color: {step3_color}; margin-top: 4px;">View Results</div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
 
 # Initialize default values (will be overridden by mode-specific inputs)
 sst = 28.5
