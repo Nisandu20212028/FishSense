@@ -1952,51 +1952,67 @@ with col2:
         st.markdown("### 📥 Offline Report")
         st.caption("Download this report to use at sea without internet")
         
-        # Generate the report map HTML (use CartoDB tiles - works when opened locally)
-        report_map = folium.Map(
-            location=[lat, lon], zoom_start=9,
-            tiles='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-            attr='&copy; <a href="https://carto.com/">CARTO</a>'
-        )
-        folium.Rectangle(bounds=[[5.9, 79.5], [9.9, 81.9]], color='blue', fill=False, weight=2).add_to(report_map)
-        report_color = {'High': 'green', 'Medium': 'orange', 'Low': 'red'}
-        folium.CircleMarker(
-            location=[lat, lon], radius=20,
-            color=report_color[prediction], fill=True,
-            fillColor=report_color[prediction], fillOpacity=0.7, weight=3,
-            popup=f"AI Prediction: {prediction}\nSST: {sst:.1f}°C\nCurrent: {current_speed:.1f} m/s"
-        ).add_to(report_map)
+        # Generate static SVG map (works completely offline - no tile server needed)
+        report_color = {'High': '#22c55e', 'Medium': '#f59e0b', 'Low': '#ef4444'}
+        marker_color = report_color.get(prediction, '#8b5cf6')
         
-        # Add K-Means Zone Overlay to report map
+        # SVG coordinate mapping: lon 77-84 -> x 0-500, lat 4-12 -> y 500-0 (flipped)
+        svg_w, svg_h = 500, 450
+        def to_svg(lon_v, lat_v):
+            x = (lon_v - 77.0) / (84.0 - 77.0) * svg_w
+            y = svg_h - (lat_v - 4.0) / (12.0 - 4.0) * svg_h
+            return x, y
+        
+        # Build K-Means zone rectangles
+        zone_rects = ""
         report_cluster_colors = {0: '#3b82f6', 1: '#f59e0b', 2: '#14b8a6'}
-        report_cluster_labels = {
-            0: 'Nutrient-Rich Coastal Zone',
-            1: 'Seasonal Fishing Zone',
-            2: 'Deep Water Pelagic Zone',
-        }
-        report_cluster_descs = {
-            0: 'Strong currents bring nutrients — attracts coastal fish',
-            1: 'Moderate seasonal conditions — good during monsoon transitions',
-            2: 'Calm deep waters — suited for tuna and pelagic species',
-        }
         report_zones = generate_kmeans_zones(model, scaler, kmeans_model)
         if report_zones:
             cell_size = 0.5
             for zone in report_zones:
                 zc = report_cluster_colors.get(zone['cluster'], '#6b7280')
-                zl = report_cluster_labels.get(zone['cluster'], f"Zone {zone['cluster']}")
-                zd = report_cluster_descs.get(zone['cluster'], '')
-                folium.Rectangle(
-                    bounds=[
-                        [zone['lat'] - cell_size/2, zone['lon'] - cell_size/2],
-                        [zone['lat'] + cell_size/2, zone['lon'] + cell_size/2]
-                    ],
-                    color=zc, fill=True, fillColor=zc,
-                    fillOpacity=0.15, weight=1, opacity=0.4,
-                    popup=f"<b>{zl}</b><br><i>{zd}</i><br><br>RF Prediction: <b>{zone['prediction']}</b><br>Est. SST: {zone['sst']:.1f}°C<br>Est. Current: {zone['current']:.1f} m/s"
-                ).add_to(report_map)
+                x1, y1 = to_svg(zone['lon'] - cell_size/2, zone['lat'] + cell_size/2)
+                x2, y2 = to_svg(zone['lon'] + cell_size/2, zone['lat'] - cell_size/2)
+                zone_rects += f'<rect x="{x1:.1f}" y="{y1:.1f}" width="{x2-x1:.1f}" height="{y2-y1:.1f}" fill="{zc}" fill-opacity="0.2" stroke="{zc}" stroke-width="0.5" stroke-opacity="0.4"/>'
         
-        map_html = report_map._repr_html_()
+        # Sri Lanka land boundary (simplified polygon)
+        sri_lanka_points = [
+            (79.7, 9.8), (80.0, 9.5), (80.2, 9.3), (80.0, 8.8), (79.8, 8.2),
+            (79.9, 7.5), (79.8, 7.0), (80.1, 6.5), (80.2, 6.1), (80.5, 5.9),
+            (80.8, 6.0), (81.2, 6.1), (81.6, 6.5), (81.8, 7.0), (81.9, 7.5),
+            (81.8, 8.0), (81.5, 8.5), (81.0, 9.0), (80.5, 9.5), (80.2, 9.8),
+            (80.0, 9.9), (79.7, 9.8)
+        ]
+        poly_str = " ".join([f"{to_svg(p[0], p[1])[0]:.1f},{to_svg(p[0], p[1])[1]:.1f}" for p in sri_lanka_points])
+        
+        # Study area
+        sa_x1, sa_y1 = to_svg(79.5, 9.9)
+        sa_x2, sa_y2 = to_svg(81.9, 5.9)
+        
+        # Prediction marker
+        mx, my = to_svg(lon, lat)
+        
+        # Grid lines
+        grid_lines = ""
+        for g_lon in range(77, 85):
+            gx, _ = to_svg(g_lon, 4)
+            grid_lines += f'<line x1="{gx:.0f}" y1="0" x2="{gx:.0f}" y2="{svg_h}" stroke="#334155" stroke-width="0.5"/>'
+            grid_lines += f'<text x="{gx:.0f}" y="{svg_h-5}" fill="#64748b" font-size="10" text-anchor="middle">{g_lon}°E</text>'
+        for g_lat in range(4, 13):
+            _, gy = to_svg(77, g_lat)
+            grid_lines += f'<line x1="0" y1="{gy:.0f}" x2="{svg_w}" y2="{gy:.0f}" stroke="#334155" stroke-width="0.5"/>'
+            grid_lines += f'<text x="5" y="{gy-3:.0f}" fill="#64748b" font-size="10">{g_lat}°N</text>'
+        
+        map_html = f"""
+        <svg viewBox="0 0 {svg_w} {svg_h}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;background:#0c1222;border-radius:8px;">
+            {grid_lines}
+            {zone_rects}
+            <rect x="{sa_x1:.1f}" y="{sa_y1:.1f}" width="{sa_x2-sa_x1:.1f}" height="{sa_y2-sa_y1:.1f}" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <polygon points="{poly_str}" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+            <circle cx="{mx:.1f}" cy="{my:.1f}" r="12" fill="{marker_color}" fill-opacity="0.3" stroke="{marker_color}" stroke-width="2"/>
+            <circle cx="{mx:.1f}" cy="{my:.1f}" r="5" fill="{marker_color}"/>
+            <text x="{mx+15:.1f}" y="{my+4:.1f}" fill="#e2e8f0" font-size="11" font-weight="bold">{prediction} ({lat:.1f}°N, {lon:.1f}°E)</text>
+        </svg>"""
         
         # Build confidence bars HTML
         confidence_html = ""
