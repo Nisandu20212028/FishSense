@@ -2194,37 +2194,4 @@ with col6:
     3. <strong>Temp Deviation</strong> (20.6%)
     </div>
     """, unsafe_allow_html=True)
-
-#============================================================================
-# FOOTER
-#============================================================================
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #cbd5e1; padding: 20px;'>
-    <p><strong style='color: #ffffff;'>FishSense</strong> - AI-Powered Fishing Zone Prediction</p>
-    <p>Final Year Project | University of Westminster | 2025</p>
-    <p>Student: Nisandu Senanayake (w1871483)</p>
-    <p>Supervisor: Kanishka Hewageegana</p>
-</div>
-""", unsafe_allow_html=True)
-
-#============================================================================
-# SIDEBAR - MODEL INFO & ABOUT
-#============================================================================
-# Model metrics at top of sidebar
-if metadata:
-    st.sidebar.markdown("### 📊 Model Performance")
-    st.sidebar.metric("🎯 Accuracy", f"{metadata.get('cv_accuracy', metadata['test_accuracy'])*100:.1f}%")
-    st.sidebar.metric("📚 Training Samples", f"{metadata['n_train_samples']}")
-
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 📚 About")
-st.sidebar.info("""
-**FishSense v1.0**
-AI-powered fishing zone prediction using oceanographic data.
-
-**Technology:**
-- Random Forest ML
-- Google Earth Engine
-- Streamlit
-""")
+
