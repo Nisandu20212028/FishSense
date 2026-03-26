@@ -1382,6 +1382,91 @@ st.markdown("---")
 
 
 #============================================================================
+# MODE SELECTION
+#============================================================================
+st.markdown("### 🎛️ How would you like to predict?")
+col1, col2 = st.columns(2)
+with col1:
+    quick_mode = st.button("🎯 Quick Prediction", type="primary", use_container_width=True)
+with col2:
+    live_mode = st.button("🛰️ Live Ocean Data", use_container_width=True)
+
+# Store mode in session state
+if 'input_mode' not in st.session_state:
+    st.session_state.input_mode = "Live Ocean Data"
+
+if quick_mode:
+    st.session_state.input_mode = "Quick Prediction"
+elif live_mode:
+    st.session_state.input_mode = "Live Ocean Data"
+
+input_mode = st.session_state.input_mode
+
+# Mode description
+if input_mode == "Quick Prediction":
+    st.info("💡 **Quick Prediction**: Perfect when you know the ocean conditions or want to test different scenarios.")
+else:
+    st.info("💡 **Live Ocean Data**: Automatically fetches real satellite data for your location. May use historical data if current data unavailable.")
+
+st.markdown("---")
+
+# Initialize default values (will be overridden by mode-specific inputs)
+sst = 28.5
+current_speed = 2.0
+current_u = 1.0
+current_v = 1.0
+
+if input_mode == "Quick Prediction":
+    # Manual input mode
+    st.markdown("<h3 style='color: #ffffff;'>🌊 Ocean Conditions</h3>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        sst = st.slider(
+            "🌡️ Water Temperature (°C)",
+            min_value=0.0,
+            max_value=40.0,
+            value=28.5,
+            step=0.1,
+            help="Optimal fishing temp is usually 20-30°C"
+        )
+    
+    with col2:
+        current_speed = st.slider(
+            "🌊 Ocean Current Strength (m/s)",
+            min_value=0.0,
+            max_value=10.0,
+            value=2.5,
+            step=0.1,
+            help="Moderate currents (2-4 m/s) are usually best for fishing"
+        )
+    
+    # Advanced parameters
+    with st.expander("🔬 Advanced Details (Optional)", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            current_u = st.slider(
+                "Current East-West (m/s)",
+                min_value=-5.0,
+                max_value=5.0,
+                value=1.0,
+                step=0.1,
+                help="Positive = Eastward flow"
+            )
+        
+        with col2:
+            current_v = st.slider(
+                "Current North-South (m/s)",
+                min_value=-5.0,
+                max_value=5.0,
+                value=1.5,
+                step=0.1,
+                help="Positive = Northward flow"
+            )
+    st.markdown("---")
+
+
+#============================================================================
 # LOCATION INPUT (MAIN AREA)
 #============================================================================
 st.markdown("<h3 style='color: #ffffff;'>📍 Choose Your Fishing Location</h3>", unsafe_allow_html=True)
@@ -1511,101 +1596,18 @@ if 79.5 <= lon <= 81.9 and 5.9 <= lat <= 9.9:
     st.warning("⚠️ **Warning**: These coordinates appear to be on LAND (Sri Lanka mainland). This model predicts ocean fishing zones. Please select coordinates in the ocean:\n- **West coast**: Longitude < 79.5 (e.g., 79.2)\n- **East coast**: Longitude > 81.9 (e.g., 82.1)")
     st.info("💡 **Suggested ocean locations**:\n- West: Lon=79.2, Lat=6.5\n- East: Lon=82.1, Lat=7.5\n- Northwest: Lon=79.3, Lat=8.5")
 
-
-st.markdown("---")
-
-#============================================================================
-# MODE SELECTION
-#============================================================================
-st.markdown("### 🎛️ How would you like to predict?")
-col1, col2 = st.columns(2)
-with col1:
-    quick_mode = st.button("🎯 Quick Prediction", type="primary", use_container_width=True)
-with col2:
-    live_mode = st.button("🛰️ Live Ocean Data", use_container_width=True)
-
-# Store mode in session state
-if 'input_mode' not in st.session_state:
-    st.session_state.input_mode = "Live Ocean Data"
-
-if quick_mode:
-    st.session_state.input_mode = "Quick Prediction"
-elif live_mode:
-    st.session_state.input_mode = "Live Ocean Data"
-
-input_mode = st.session_state.input_mode
-
-# Mode description
-if input_mode == "Quick Prediction":
-    st.info("💡 **Quick Prediction**: Perfect when you know the ocean conditions or want to test different scenarios.")
-else:
-    st.info("💡 **Live Ocean Data**: Automatically fetches real satellite data for your location. May use historical data if current data unavailable.")
-
 st.markdown("---")
 
 # Initialize session state for fetched data
 if 'fetched_data' not in st.session_state:
     st.session_state.fetched_data = None
 
-# Initialize default values (will be overridden by mode-specific inputs)
-sst = 28.5
-current_speed = 2.0
-current_u = 1.0
-current_v = 1.0
-
 #============================================================================
-# CONDITIONAL INPUTS BASED ON MODE
+# ACTION BUTTONS AND PREDICTION LOGIC
 #============================================================================
 
 if input_mode == "Quick Prediction":
-    # Manual input mode
-    st.markdown("<h3 style='color: #ffffff;'>🌊 Ocean Conditions</h3>", unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        sst = st.slider(
-            "🌡️ Water Temperature (°C)",
-            min_value=0.0,
-            max_value=40.0,
-            value=28.5,
-            step=0.1,
-            help="Optimal fishing temp is usually 20-30°C"
-        )
-    
-    with col2:
-        current_speed = st.slider(
-            "🌊 Ocean Current Strength (m/s)",
-            min_value=0.0,
-            max_value=10.0,
-            value=2.5,
-            step=0.1,
-            help="Moderate currents (2-4 m/s) are usually best for fishing"
-        )
-    
-    # Advanced parameters
-    with st.expander("🔬 Advanced Details (Optional)", expanded=False):
-        col1, col2 = st.columns(2)
-        with col1:
-            current_u = st.slider(
-                "Current East-West (m/s)",
-                min_value=-5.0,
-                max_value=5.0,
-                value=1.0,
-                step=0.1,
-                help="Positive = Eastward flow"
-            )
-        
-        with col2:
-            current_v = st.slider(
-                "Current North-South (m/s)",
-                min_value=-5.0,
-                max_value=5.0,
-                value=1.5,
-                step=0.1,
-                help="Positive = Northward flow"
-            )
-    
-    st.markdown("---")
+    # Just the predict button using the manulay inputted values
     predict_button = st.button("🎯 Find Fishing Zones", type="primary", key="manual_predict", use_container_width=True)
 
 else:
@@ -1686,6 +1688,7 @@ else:
     else:
         st.info("👆 Click 'Fetch Live Ocean Data' to get real-time data for the selected location")
         predict_button = False
+
 
 # Calculate derived features
 mean_sst = 29.0  # Average from training data
@@ -2190,4 +2193,4 @@ with col6:
     3. <strong>Temp Deviation</strong> (20.6%)
     </div>
     """, unsafe_allow_html=True)
-
+
