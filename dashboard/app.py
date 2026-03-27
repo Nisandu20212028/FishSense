@@ -2230,37 +2230,3 @@ if st.session_state.get('prediction_history') and len(st.session_state.predictio
     
     df_history = pd.DataFrame(history_data)
     st.dataframe(df_history, use_container_width=True, hide_index=True)
-
-
-#============================================================================
-# BOTTOM SECTION: MODEL PERFORMANCE
-#============================================================================
-st.markdown("---")
-st.markdown("<h2 style='color: #ffffff;'>📈 Model Performance & Features</h2>", unsafe_allow_html=True)
-
-col4, col5, col6 = st.columns(3)
-
-with col4:
-    st.markdown("<h3 style='color: #e0e0e0;'>🎯 Accuracy Metrics</h3>", unsafe_allow_html=True)
-    if metadata:
-        st.metric("Cross-Validated Accuracy", f"{metadata.get('cv_accuracy', metadata['test_accuracy'])*100:.1f}%")
-        st.metric("Spatial CV Accuracy", f"{metadata.get('spatial_cv_accuracy', metadata['test_accuracy'])*100:.1f}%")
-        st.metric("Number of Classes", len(metadata['classes']))
-
-with col5:
-    st.markdown("<h3 style='color: #e0e0e0;'>🌲 Model Details</h3>", unsafe_allow_html=True)
-    if metadata:
-        st.metric("Algorithm", "Random Forest")
-        st.metric("Number of Trees", "100")
-        st.metric("Training Samples", metadata['n_train_samples'])
-
-with col6:
-    st.markdown("<h3 style='color: #e0e0e0;'>🔬 Top Features</h3>", unsafe_allow_html=True)
-    st.markdown("""
-    <div style='color: #cbd5e1;'>
-    1. <strong>Current Speed</strong> (33.9%)<br>
-    2. <strong>Temperature</strong> (21.4%)<br>
-    3. <strong>Temp Deviation</strong> (20.6%)
-    </div>
-    """, unsafe_allow_html=True)
-
