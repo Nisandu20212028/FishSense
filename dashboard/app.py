@@ -2230,3 +2230,91 @@ if st.session_state.get('prediction_history') and len(st.session_state.predictio
     
     df_history = pd.DataFrame(history_data)
     st.dataframe(df_history, use_container_width=True, hide_index=True)
+
+
+#============================================================================
+# ABOUT SECTION (collapsible)
+#============================================================================
+st.markdown("---")
+with st.expander("🔬 About FishSense — Methodology, Model Details & Data Sources", expanded=False):
+    
+    st.markdown("<h3 style='color: #c4b5fd;'>📈 Model Performance</h3>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("<h4 style='color: #e0e0e0;'>🎯 Accuracy Metrics</h4>", unsafe_allow_html=True)
+        if metadata:
+            st.metric("Cross-Validated Accuracy", f"{metadata.get('cv_accuracy', metadata['test_accuracy'])*100:.1f}%")
+            st.metric("Spatial CV Accuracy", f"{metadata.get('spatial_cv_accuracy', metadata['test_accuracy'])*100:.1f}%")
+            st.metric("Number of Classes", len(metadata['classes']))
+    with col2:
+        st.markdown("<h4 style='color: #e0e0e0;'>🌲 Model Details</h4>", unsafe_allow_html=True)
+        if metadata:
+            st.metric("Algorithm", "Random Forest")
+            st.metric("Number of Trees", "100")
+            st.metric("Training Samples", metadata['n_train_samples'])
+    with col3:
+        st.markdown("<h4 style='color: #e0e0e0;'>🔬 Top Features</h4>", unsafe_allow_html=True)
+        st.markdown("""
+        <div style='color: #cbd5e1;'>
+        1. <strong>Current Speed</strong> (33.9%)<br>
+        2. <strong>Temperature</strong> (21.4%)<br>
+        3. <strong>Temp Deviation</strong> (20.6%)
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    st.markdown("<h3 style='color: #c4b5fd;'>📋 Methodology</h3>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        <div style='background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 12px;'>
+            <h4 style='color: #c4b5fd; margin-bottom: 10px;'>🛰️ Data Sources</h4>
+            <p style='color: #cbd5e1; line-height: 1.8; margin: 0;'>
+                <strong style='color: #a78bfa;'>Primary:</strong> Google Earth Engine (MODIS SST, HYCOM Currents)<br>
+                <strong style='color: #a78bfa;'>Fallback:</strong> Open-Meteo Marine API (Copernicus forecast)<br>
+                <strong style='color: #a78bfa;'>Coverage:</strong> Sri Lankan waters (77°E–84°E, 4°N–12°N)<br>
+                <strong style='color: #a78bfa;'>Parameters:</strong> SST, Ocean Current Speed & Direction
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style='background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 20px;'>
+            <h4 style='color: #c4b5fd; margin-bottom: 10px;'>🧪 Validation</h4>
+            <p style='color: #cbd5e1; line-height: 1.8; margin: 0;'>
+                <strong style='color: #a78bfa;'>Cross-Validation:</strong> 5-fold stratified CV<br>
+                <strong style='color: #a78bfa;'>Spatial CV:</strong> Testing on unseen geographic regions<br>
+                <strong style='color: #a78bfa;'>Noise Simulation:</strong> 15% random label noise to prevent overfitting
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div style='background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 12px;'>
+            <h4 style='color: #c4b5fd; margin-bottom: 10px;'>🤖 ML Pipeline</h4>
+            <p style='color: #cbd5e1; line-height: 1.8; margin: 0;'>
+                <strong style='color: #a78bfa;'>Classification:</strong> Random Forest (100 estimators)<br>
+                <strong style='color: #a78bfa;'>Clustering:</strong> K-Means (3 clusters) for zone identification<br>
+                <strong style='color: #a78bfa;'>Scaling:</strong> StandardScaler for feature normalization<br>
+                <strong style='color: #a78bfa;'>Features:</strong> SST, Current Speed, U/V, Temp Deviation, Lat/Lon
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style='background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 20px;'>
+            <h4 style='color: #c4b5fd; margin-bottom: 10px;'>🐟 Zone Classifications</h4>
+            <p style='color: #cbd5e1; line-height: 1.8; margin: 0;'>
+                <span style='color: #3b82f6;'>●</span> <strong>Nutrient-Rich Coastal</strong> — Strong currents, reef & coastal fish<br>
+                <span style='color: #f59e0b;'>●</span> <strong>Seasonal Fishing</strong> — Best during monsoon transitions<br>
+                <span style='color: #14b8a6;'>●</span> <strong>Deep Water Pelagic</strong> — Calm waters, tuna & pelagic species
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.markdown("""
+    <div style='text-align: center; color: #94a3b8; padding: 10px;'>
+        <p><strong style='color: #a78bfa;'>FishSense v1.0</strong> — AI-Powered Ocean Health & Fishing Zone Intelligence</p>
+        <p style='margin-top: 5px;'><a href='https://github.com/Nisandu20212028/FishSense' style='color: #a78bfa;'>📂 GitHub Repository</a></p>
+    </div>
+    """, unsafe_allow_html=True)
